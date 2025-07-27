@@ -1,0 +1,368 @@
+﻿/* Header */
+.transfer-header {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: white;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.15s ease;
+}
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+.header-content h1 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.yeni-hesap-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+    .yeni-hesap-btn:hover {
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+    }
+
+/* Yeni Hesap Sayfası Stilleri */
+.yeni-hesap-container {
+    min-height: 100vh;
+    background: #f8fafc;
+    padding: 1rem;
+}
+
+.yeni-hesap-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.yeni-hesap-form {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+}
+
+.form-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+/* Hesap Tipi Kartları */
+.hesap-tipi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.hesap-tipi-card {
+    position: relative;
+}
+
+    .hesap-tipi-card input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.hesap-tipi-label {
+    display: block;
+    padding: 2rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+    .hesap-tipi-label:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    }
+
+.hesap-tipi-card input[type="radio"]:checked + .hesap-tipi-label {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.card-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: #6b7280;
+}
+
+.hesap-tipi-card input[type="radio"]:checked + .hesap-tipi-label .card-icon {
+    color: #3b82f6;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.card-description {
+    color: #6b7280;
+    margin-bottom: 1rem;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.card-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .card-features li {
+        padding: 0.25rem 0;
+        color: #6b7280;
+        font-size: 0.875rem;
+        position: relative;
+        padding-left: 1rem;
+    }
+
+        .card-features li:before {
+            content: "•";
+            color: #3b82f6;
+            position: absolute;
+            left: 0;
+        }
+
+/* Para Birimi Kartları */
+.para-birimi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.para-birimi-card {
+    position: relative;
+}
+
+    .para-birimi-card input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.para-birimi-label {
+    display: block;
+    padding: 2rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    text-align: center;
+}
+
+    .para-birimi-label:hover {
+        border-color: #10b981;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+
+.para-birimi-card input[type="radio"]:checked + .para-birimi-label {
+    border-color: #10b981;
+    background: #ecfdf5;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+.currency-symbol {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.para-birimi-card input[type="radio"]:checked + .para-birimi-label .currency-symbol {
+    color: #10b981;
+}
+
+.currency-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.currency-description {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Bakiye Input */
+.bakiye-input-container {
+    position: relative;
+    max-width: 300px;
+}
+
+.bakiye-input {
+    width: 100%;
+    padding: 1rem;
+    padding-right: 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    transition: border-color 0.2s;
+}
+
+    .bakiye-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+.input-suffix {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Seçim Özeti */
+.secim-ozeti {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.ozet-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.ozet-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+    .ozet-item:last-child {
+        border-bottom: none;
+    }
+
+.ozet-label {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.ozet-value {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* Submit Button */
+.form-actions {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.btn-hesap-olustur {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 200px;
+}
+
+    .btn-hesap-olustur:hover:not(:disabled) {
+        background: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-hesap-olustur:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+/* Alert Styles */
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.alert ul {
+    margin: 0;
+    padding-left: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hesap-tipi-grid,
+    .para-birimi-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .yeni-hesap-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

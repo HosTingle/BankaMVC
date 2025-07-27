@@ -1,0 +1,178 @@
+﻿@model BankaMVC.Models.ViewModels.VarliklarimViewModel
+@{
+    ViewData["Title"] = "Varlıklarım";
+}
+
+<link rel="stylesheet" href="~/css/varliklarim.css" />
+
+<div class="varliklar-container">
+    <div class="varliklar-wrapper">
+        <header class="transfer-header">
+            <div class="header-content">
+                <a href="@Url.Action("index", "gostergepaneli")" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                </a>
+                <h1>Varlıklarım</h1>
+            </div> 
+        </header>
+
+  
+        <!-- Güncel Durum ve Para Birimi -->
+        <div class="durum-card">
+            <div class="durum-header">
+                <h2>Güncel Durum</h2>
+                <div class="para-birimi-selector">
+                    <select id="paraBirimiSelect" onchange="updateCurrency()">
+             
+                        <option value="USD" selected="@(Model.SecilenParaBirimi == "USD")">$ USD</option>
+                        <option value="EUR" selected="@(Model.SecilenParaBirimi == "EUR" )">€ EUR</option>
+                        <option value="TRY" selected="@(Model.SecilenParaBirimi == "TRY" )">₺ TRY</option>
+                    </select>
+                </div>
+            </div>
+  
+            <!-- Net Varlık ve Toplam Borç -->
+            <div class="finansal-cards">
+                <div class="finansal-card net-varlik">
+                    <h3>Net Varlığım</h3>
+                    <p class="tutar">@Model.NetVarlik.ToString("N2") @GetCurrencySymbol(Model.SecilenParaBirimi)</p>
+                </div>
+
+                <div class="finansal-card toplam-borc">
+                    <h3>Toplam Borç</h3>
+                    <p class="tutar">@Model.ToplamBorc.ToString("N2") @GetCurrencySymbol(Model.SecilenParaBirimi)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Varlıklar ve Borçlar Seçimi -->
+        <div class="bolum-buttons">
+            <button class="bolum-btn @(Model.AktifBolum == "varliklar" ? "active" : "")" 
+                    onclick="selectSection('varliklar')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/>
+                    <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>
+                </svg>
+                <span>Varlıklar</span>
+            </button>
+
+            <button class="bolum-btn @(Model.AktifBolum == "borclar" ? "active" : "")" 
+                    onclick="selectSection('borclar')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="20" height="14" x="2" y="5" rx="2"/>
+                    <line x1="2" x2="22" y1="10" y2="10"/>
+                </svg>
+                <span>Borçlar</span>
+            </button>
+        </div>
+
+        <!-- Dağılım Gösterimi -->
+        <div class="dagilim-container" id="dagilimContainer" style="display: @(string.IsNullOrEmpty(Model.AktifBolum) ? "none" : "block")">
+            <div class="dagilim-header">
+                <h3 id="dagilimTitle">@(Model.AktifBolum == "varliklar" ? "Varlık Dağılımı" : Model.AktifBolum == "borclar" ? "Borç Dağılımı" : "")</h3>
+            </div>
+            
+            <!-- Merkez Daire -->
+            <div class="merkez-daire-container">
+                <div class="merkez-daire @(Model.AktifBolum == "borclar" ? "borc-rengi" : "")" id="merkezDaire">
+                    <div class="merkez-tutar" id="merkezTutar">
+                        @(Model.AktifBolum == "varliklar" ? Model.ToplamVarlik.ToString("N2") : Model.AktifBolum == "borclar" ? Model.ToplamBorc.ToString("N2") : "0") @GetCurrencySymbol(Model.SecilenParaBirimi)
+                    </div>
+                    <div class="merkez-label" id="merkezLabel">
+                        @(Model.AktifBolum == "varliklar" ? "Toplam Varlık" : Model.AktifBolum == "borclar" ? "Toplam Borç" : "")
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detay Listesi -->
+            <div class="detay-listesi" id="detayListesi">
+                @if (Model.AktifBolum == "varliklar")
+                {
+           
+                        var toplamVarlik = Model.Hesaplar.Sum(h => ConvertCurrency(h.Bakiye, h.ParaBirimi, Model.SecilenParaBirimi));
+                        var colorIndex = 0;
+                        var colors = new[] { "#2158e1", "#3b82f6", "#1e40af", "#60a5fa" };
+                  
+                    @foreach (var hesap in Model.Hesaplar)
+                    {
+                        var cevriliTutar = ConvertCurrency(hesap.Bakiye, hesap.ParaBirimi, Model.SecilenParaBirimi);
+                        var yuzde = toplamVarlik > 0 ? (cevriliTutar / toplamVarlik) * 100 : 0;
+                        
+                        <div class="detay-item">
+                            <div class="detay-sol">
+                                <div class="renk-kutu" style="background-color: @colors[colorIndex % colors.Length]"></div>
+                                <span class="detay-ad">@hesap.HesapTipi (@hesap.ParaBirimi)</span>
+                            </div>
+                            <div class="detay-sag">
+                                <div class="detay-tutar">@cevriliTutar.ToString("N2") @GetCurrencySymbol(Model.SecilenParaBirimi)</div>
+                                <div class="detay-yuzde">%@yuzde.ToString("F1")</div>
+                            </div>
+                        </div>
+                        colorIndex++;
+                    }
+                }
+                else if (Model.AktifBolum == "borclar")
+                {
+             var krediKartlari = Model.Kartlar.ToList();
+    var toplamBorc = krediKartlari.Sum(k => ConvertCurrency(k.KartBorc, "TRY", Model.SecilenParaBirimi));
+    var colorIndex = 0;
+    var colors = new[] { "#e74c3c", "#ef4444", "#dc2626", "#f87171" };
+
+
+                    @foreach (var kart in @Model.Kartlar)
+                    {
+                        var cevriliTutar = ConvertCurrency(kart.KartBorc, "TRY", Model.SecilenParaBirimi);
+                        var yuzde = toplamBorc > 0 ? (cevriliTutar / toplamBorc) * 100 : 0;
+                        
+                        <div class="detay-item">
+                            <div class="detay-sol">
+                                <div class="renk-kutu" style="background-color: @colors[colorIndex % colors.Length]"></div>
+                                <span class="detay-ad">Kredi Kartı (***@kart.KartNumarasi.Substring(kart.KartNumarasi.Length - 4))</span>
+                            </div>
+                            <div class="detay-sag">
+                                <div class="detay-tutar">@kart.KartBorc @GetCurrencySymbol(Model.SecilenParaBirimi)</div>
+                                <div class="detay-yuzde">%@yuzde.ToString("F1")</div>
+                            </div>
+                        </div>
+                        colorIndex++;
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/varliklarim.js"></script>
+
+@functions {
+    string GetCurrencySymbol(string currency)
+    {
+        return currency switch
+        {
+            "USD" => "$",
+            "EUR" => "€",
+            "TRY" => "₺",
+            _ => "₺"
+        };
+    }
+
+    decimal ConvertCurrency(decimal amount, string fromCurrency, string toCurrency)
+    {
+        if (fromCurrency == toCurrency) return amount;
+
+        var dovizKuru = new BankaMVC.Models.ViewModels.DovizKuru();
+        return (fromCurrency, toCurrency) switch
+        {
+            ("TRY", "USD") => amount * dovizKuru.TRY_USD,
+            ("TRY", "EUR") => amount * dovizKuru.TRY_EUR,
+            ("USD", "TRY") => amount * dovizKuru.USD_TRY,
+            ("USD", "EUR") => amount * dovizKuru.USD_EUR,
+            ("EUR", "TRY") => amount * dovizKuru.EUR_TRY,
+            ("EUR", "USD") => amount * dovizKuru.EUR_USD,
+            _ => amount
+        };
+    }
+}

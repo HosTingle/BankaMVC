@@ -1,0 +1,93 @@
+﻿@model BankaMVC.Models.ViewModels.SonHareketlerViewModel
+@{
+    Layout = "~/Views/Shared/_SonHareketlerLayout.cshtml";
+    ViewData["Title"] = "Son Hareketler";
+}
+
+<link rel="stylesheet" href="~/css/son-hareketler.css" />
+
+<div class="son-hareketler-container">
+    <div class="son-hareketler-wrapper">
+        <header class="transfer-header">
+            <div class="header-content">
+                <a href="@Url.Action("index", "gostergepaneli")" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                </a>
+                <h1>Destek </h1>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <div class="tab-buttons">
+                <button type="button" class="tab-btn @(Model.AktifTab == "vadesiz" ? "active" : "")" data-tab="vadesiz">
+                    <div class="tab-content">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+                            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+                        </svg>
+                        <span>Vadesiz İşlemler</span>
+                    </div>
+                </button>
+                <button type="button" class="tab-btn @(Model.AktifTab == "kredi" ? "active" : "")" data-tab="kredi">
+                    <div class="tab-content">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="20" height="14" x="2" y="5" rx="2" />
+                            <line x1="2" x2="22" y1="10" y2="10" />
+                        </svg>
+                        <span>Kredi Kartı İşlemleri</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="card">
+            <div class="card-header">
+                <h2 id="section-title">Son Vadesiz Hesap İşlemleri</h2>
+            </div>
+
+            <div id="islem-listesi">
+                @Html.Partial("_IslemListesi", Model.HesapIslemler)
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const sectionTitle = document.getElementById('section-title');
+        const islemListesi = document.getElementById('islem-listesi');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const tabType = this.getAttribute('data-tab');
+
+                // Tab butonlarını güncelle
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Başlığı güncelle
+                if (tabType === 'vadesiz') {
+                    sectionTitle.textContent = 'Son Vadesiz Hesap İşlemleri';
+                } else {
+                    sectionTitle.textContent = 'Son Kredi Kartı İşlemleri';
+                }
+
+                // İşlem listesini güncelle
+                fetch(`/SonHareketler/GetIslemler?tip=${tabType}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        islemListesi.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
+    });
+</script>

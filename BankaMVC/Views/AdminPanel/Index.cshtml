@@ -1,0 +1,75 @@
+﻿@model BankaMVC.Models.Somut.BankaYonetimPaneli.Models.DashboardOzet
+
+@{
+    ViewBag.Title = "AdminPanel";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="page-title">Admin Panel</h2>
+
+<div class="dashboard-cards">
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <div class="dashboard-card-title">BEKLEYEN HESAP İSTEKLERİ</div>
+            <div class="dashboard-card-icon bg-blue">
+                <i class="fas fa-user-plus"></i>
+            </div>
+        </div>
+        <div class="dashboard-card-value">@Model.BekleyenHesapIstekleri</div>
+        <div class="dashboard-card-description">
+            <a href="@Url.Action("Index", "HesapIstekleri")">
+                <i class="fas fa-arrow-right"></i> Tüm istekleri görüntüle
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <div class="dashboard-card-title">BEKLEYEN KART İSTEKLERİ</div>
+            <div class="dashboard-card-icon bg-green">
+                <i class="fas fa-credit-card"></i>
+            </div>
+        </div>
+        <div class="dashboard-card-value">@Model.BekleyenKartIstekleri</div>
+        <div class="dashboard-card-description">
+            <a href="@Url.Action("Index", "KartIstekleri")">
+                <i class="fas fa-arrow-right"></i> Tüm istekleri görüntüle
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <div class="dashboard-card-title">AÇIK DESTEK TALEPLERİ</div>
+            <div class="dashboard-card-icon bg-red">
+                <i class="fas fa-headset"></i>
+            </div>
+        </div>
+        <div class="dashboard-card-value">@Model.AcikDestekTalepleri</div>
+        <div class="dashboard-card-description">
+            <a href="@Url.Action("Index", "DestekTalepleri")">
+                <i class="fas fa-arrow-right"></i> Tüm talepleri görüntüle
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="dashboard-card-header">
+            <div class="dashboard-card-title">BEKLEYEN LİMİT ARTIRMA</div>
+            <div class="dashboard-card-icon bg-yellow">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+        </div>
+        <div class="dashboard-card-value">@Model.BekleyenLimitArtirmaIstekleri</div>
+        <div class="dashboard-card-description">
+            <a href="@Url.Action("Index", "LimitArtirma")">
+                <i class="fas fa-arrow-right"></i> Tüm istekleri görüntüle
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    @await Html.PartialAsync("_KullaniciLoglari", Model.KullaniciLoglari)
+
+</div>

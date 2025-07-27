@@ -1,0 +1,52 @@
+﻿@model List<BankaMVC.Models.Somut.BankaYonetimPaneli.Models.KullaniciLogDto>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Kullanıcı Giriş Kayıtları</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kullanıcı ID</th>
+                        <th>IP Adresi</th>
+                        <th>Durum</th>
+                        <th>Zaman</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var log in Model)
+                        {
+                            <tr>
+                                <td>@log.Id</td>
+                                <td>@log.KullaniciId</td>
+                                <td>@log.IpAdresi</td>
+                                <td>
+                                    @if (log.Basarili)
+                                    {
+                                        <span class="badge badge-success">Başarılı</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Başarısız</span>
+                                    }
+                                </td>
+                                <td>@log.Zaman.ToString("dd.MM.yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Herhangi bir giriş yapılmamış.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

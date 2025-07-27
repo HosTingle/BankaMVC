@@ -1,0 +1,404 @@
+﻿@model BankaMVC.Models.ViewModels.ParaIslemViewModel
+@{
+    ViewData["Title"] = "Para İşlemleri";
+    Layout = "~/Views/Shared/_ParaIslemLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <header class="transfer-header">
+                <div class="header-content">
+                    <a href="@Url.Action("index", "gostergepaneli")" class="back-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m12 19-7-7 7-7"></path>
+                            <path d="M19 12H5"></path>
+                        </svg>
+                    </a>
+                    <h1>Para Çek-Yatır</h1>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="card">
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <div>@error.ErrorMessage</div>
+                            }
+                        </div>
+                    }
+
+                    <form asp-controller="ParaIslem" asp-action="ParaCekYatir" method="post">
+                        <!-- Tab Navigation -->
+                        <div class="tab-navigation">
+                            <button type="button" class="tab-btn active" data-tab="Para Çekme">Para Çek</button>
+                            <button type="button" class="tab-btn" data-tab="Para Yatırma">Para Yatır</button>
+                        </div>
+
+                        <input type="hidden" asp-for="IslemTuru" id="islemTuruInput" />
+
+                        <!-- Para Çek Tab -->
+                        <div id="cek-tab" class="tab-content active">
+                            <!-- Araç Türü -->
+                            <div class="section">
+                                <label class="section-title">Çekim Yöntemi</label>
+                                <div class="radio-group">
+                                    <div class="radio-item">
+                                        <input type="radio" asp-for="AracTuru" value="hesap" id="hesap-cek" />
+                                        <label for="hesap-cek" class="radio-label">
+                                            <div class="radio-title">Hesaptan Çek</div>
+                                            <div class="radio-desc">Banka hesabınızdan para çekin</div>
+                                        </label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" asp-for="AracTuru" value="kart" id="kart-cek" />
+                                        <label for="kart-cek" class="radio-label">
+                                            <div class="radio-title">Karttan Çek</div>
+                                            <div class="radio-desc">Kredi kartınızdan nakit avans</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hesap Seçimi -->
+                            <div id="hesap-secimi" class="section" style="display: none;">
+                                <label class="section-title">Hesap Seçimi</label>
+                                <!-- ===== YENİ KOD BAŞLANGICI ===== -->
+                                @if (Model.Hesaplar != null && Model.Hesaplar.Any())
+                                {
+                                    @foreach (var hesap in Model.Hesaplar)
+                                    {
+                                        <div class="account-item">
+                                            <input type="radio" name="SecilenHesapId" value="@hesap.HesapNo" id="hesap-@hesap.Id" />
+                                            <label for="hesap-@hesap.Id" class="account-label">
+                                                <div class="account-info">
+                                                    <div class="account-left">
+                                                        <div class="account-type">@hesap.HesapTipi</div>
+                                                        <div class="account-number">Hesap No: @hesap.HesapNo</div>
+                                                        <div class="account-currency">@hesap.ParaBirimi</div>
+                                                    </div>
+                                                    <div class="account-right">
+                                                        <div class="account-balance">
+                                                            @(hesap.ParaBirimi == "USD" ? "$" : "₺")@hesap.Bakiye.ToString("N2")
+                                                        </div>
+                                                        <div class="account-available">Kullanılabilir</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning">Sistemde kayıtlı herhangi bir hesabınız bulunmamaktadır.</div>
+                                }
+                                <!-- ===== YENİ KOD SONU ===== -->
+                            </div>
+
+                            <!-- Kart Seçimi -->
+                            <div id="kart-secimi" class="section" style="display: none;">
+                                <label class="section-title">Kart Seçimi</label>
+                                <!-- ===== YENİ KOD BAŞLANGICI ===== -->
+                                @if (Model.Kartlar != null && Model.Kartlar.Any())
+                                {
+                                    @foreach (var kart in Model.Kartlar)
+                                    {
+                                        bool disabled = kart.KartTipi == "Banka Kartı";
+                                        <div class="account-item @(disabled ? "disabled" : "")">
+                                            <input type="radio" name="SecilenKartId" value="@kart.KartNumarasi" id="kart-@kart.Id" @(disabled ? "disabled" : "") />
+                                            <label for="kart-@kart.Id" class="account-label">
+                                                <div class="account-info">
+                                                    <div class="account-left">
+                                                        <div class="account-type">@kart.KartTipi</div>
+                                                        <div class="account-number">@kart.KartNumarasi</div>
+                                                        @if (disabled)
+                                                        {
+                                                            <div class="error-text">Para çekme için kullanılamaz</div>
+                                                        }
+                                                    </div>
+                                                    <div class="account-right">
+                                                        @if (kart.KartTipi == "Kredi Kartı")
+                                                        {
+                                                            <div class="account-balance success">₺@(kart.Limit?.ToString("N0") ?? "0")</div>
+                                                            <div class="account-available">Kullanılabilir Limit</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="account-balance">Banka Kartı</div>
+                                                            <div class="account-available">Kullanılamaz</div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning">Sistemde kayıtlı herhangi bir kartınız bulunmamaktadır.</div>
+                                }
+                                <!-- ===== YENİ KOD SONU ===== -->
+                            </div>
+
+                            <!-- Tutar -->
+                            <div class="section">
+                                <label class="section-title">Çekilecek Tutar</label>
+                                <div class="amount-input">
+                                    <span class="currency">₺</span>
+                                    <input type="number" asp-for="Tutar" step="0.01" min="1" max="999999" placeholder="0.00" />
+
+                                </div>
+                                <div class="help-text">Çekmek istediğiniz tutarı giriniz</div>
+                            </div>
+
+                            <button type="submit" class="submit-btn">Para Çek</button>
+                        </div>
+
+                        <!-- Para Yatır Tab -->
+                        <div id="yatir-tab" class="tab-content">
+                            <!-- Araç Türü -->
+                            <div class="section">
+                                <label class="section-title">Yatırım Yöntemi</label>
+                                <div class="radio-group">
+                                    <div class="radio-item">
+                                        <input type="radio" asp-for="AracTuru" value="hesap" id="hesap-yatir" />
+                                        <label for="hesap-yatir" class="radio-label">
+                                            <div class="radio-title">Hesaba Yatır</div>
+                                            <div class="radio-desc">Banka hesabınıza para yatırın</div>
+                                        </label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" asp-for="AracTuru" value="kart" id="kart-yatir" />
+                                        <label for="kart-yatir" class="radio-label">
+                                            <div class="radio-title">Karta Yatır</div>
+                                            <div class="radio-desc">Kart hesabınıza para yatırın</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hesap Seçimi -->
+                            <div id="hesap-secimi-yatir" class="section" style="display: none;">
+                                <label class="section-title">Hesap Seçimi</label>
+                                <!-- ===== YENİ KOD BAŞLANGICI ===== -->
+                                @if (Model.Hesaplar != null && Model.Hesaplar.Any())
+                                {
+                                    @foreach (var hesap in Model.Hesaplar)
+                                    {
+                                        <div class="account-item">
+                                            <input type="radio" name="SecilenHesapId" value="@hesap.HesapNo" id="hesap-yatir-@hesap.Id" />
+                                            <label for="hesap-yatir-@hesap.Id" class="account-label">
+                                                <div class="account-info">
+                                                    <div class="account-left">
+                                                        <div class="account-type">@hesap.HesapTipi</div>
+                                                        <div class="account-number">Hesap No: @hesap.HesapNo</div>
+                                                        <div class="account-currency">@hesap.ParaBirimi</div>
+                                                    </div>
+                                                    <div class="account-right">
+                                                        <div class="account-balance">
+                                                            @(hesap.ParaBirimi == "USD" ? "$" : "₺")@hesap.Bakiye.ToString("N2")
+                                                        </div>
+                                                        <div class="account-available">Mevcut Bakiye</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning">Sistemde kayıtlı herhangi bir hesabınız bulunmamaktadır.</div>
+                                }
+                                <!-- ===== YENİ KOD SONU ===== -->
+                            </div>
+
+                            <!-- Kart Seçimi -->
+                            <div id="kart-secimi-yatir" class="section" style="display: none;">
+                                <label class="section-title">Kart Seçimi</label>
+                                <!-- ===== YENİ KOD BAŞLANGICI ===== -->
+                                @if (Model.Kartlar != null && Model.Kartlar.Any())
+                                {
+                                    @foreach (var kart in Model.Kartlar)
+                                    {
+                                        bool disabled = kart.KartTipi == "Banka Kartı";
+                                        <div class="account-item @(disabled ? "disabled" : "")">
+                                            <input type="radio"
+                                                   name="SecilenKartId"
+                                                   value="@kart.KartNumarasi"
+                                                   id="kart-yatir-@kart.Id"
+                                            @(disabled ? "disabled" : "") />
+                                            <label for="kart-yatir-@kart.Id" class="account-label">
+                                                <div class="account-info">
+                                                    <div class="account-left">
+                                                        <div class="account-type">@kart.KartTipi</div>
+                                                        <div class="account-number">@kart.KartNumarasi</div>
+                                                        @if (disabled)
+                                                        {
+                                                            <div class="error-text">Para yatırma için kullanılamaz</div>
+                                                        }
+                                                    </div>
+                                                    <div class="account-right">
+                                                        @if (kart.KartTipi == "Kredi Kartı")
+                                                        {
+                                                            <div class="account-balance success">₺@(kart.Limit?.ToString("N0") ?? "0")</div>
+                                                            <div class="account-available">Kullanılabilir Limit</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="account-balance">Banka Kartı</div>
+                                                            <div class="account-available">Kullanılamaz</div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning">Sistemde kayıtlı herhangi bir kartınız bulunmamaktadır.</div>
+                                }
+                             
+                            </div>
+
+
+                            <!-- Tutar -->
+                            <div class="section">
+                                <label class="section-title">Yatırılacak Tutar</label>
+                                <div class="amount-input">
+                                    <span class="currency">₺</span>
+                                    <input type="number" asp-for="YTutar" step="0.01" min="1" max="999999" placeholder="0.00" />
+                                </div>
+                                <div class="help-text">Yatırmak istediğiniz tutarı giriniz</div>
+                            </div>
+
+                            <button type="submit" class="submit-btn">Para Yatır</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- BU BÖLÜMLER AYNI KALIYOR ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const islemTuruInput = document.getElementById('islemTuruInput');
+
+        // Sayfa yüklendiğinde aktif olan tab'a göre hidden input'u ayarla
+        const initialActiveTab = document.querySelector('.tab-btn.active');
+        if (initialActiveTab) {
+            islemTuruInput.value = initialActiveTab.getAttribute('data-tab');
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const tabName = this.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                if (tabName === 'Para Çekme') {
+                    document.getElementById('cek-tab').classList.add('active');
+                } else if (tabName === 'Para Yatırma') {
+                    document.getElementById('yatir-tab').classList.add('active');
+                }
+
+                islemTuruInput.value = tabName;
+                resetTabSelections(tabName);
+            });
+        });
+
+        const aracTuruRadios = document.querySelectorAll('input[name="AracTuru"]');
+        aracTuruRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                const activeTab = document.querySelector('.tab-content.active').id;
+                const aracTuru = this.value;
+
+                if (activeTab === 'cek-tab') {
+                    document.getElementById('hesap-secimi').style.display = aracTuru === 'hesap' ? 'block' : 'none';
+                    document.getElementById('kart-secimi').style.display = aracTuru === 'kart' ? 'block' : 'none';
+                } else { // yatir-tab
+                    document.getElementById('hesap-secimi-yatir').style.display = aracTuru === 'hesap' ? 'block' : 'none';
+                    document.getElementById('kart-secimi-yatir').style.display = aracTuru === 'kart' ? 'block' : 'none';
+                }
+            });
+        });
+
+        function resetTabSelections(tabName) {
+            let aracTuruRadios;
+            if (tabName === 'Para Çekme') {
+                aracTuruRadios = document.querySelectorAll('#cek-tab input[name="AracTuru"]');
+                document.getElementById('hesap-secimi').style.display = 'none';
+                document.getElementById('kart-secimi').style.display = 'none';
+            } else {
+                aracTuruRadios = document.querySelectorAll('#yatir-tab input[name="AracTuru"]');
+                document.getElementById('hesap-secimi-yatir').style.display = 'none';
+                document.getElementById('kart-secimi-yatir').style.display = 'none';
+            }
+            aracTuruRadios.forEach(radio => radio.checked = false);
+            document.querySelectorAll('input[name="SecilenHesapId"], input[name="SecilenKartId"]').forEach(radio => radio.checked = false);
+        }
+
+        // --- DEĞİŞTİRİLECEK BÖLÜM BURASI ---
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function (e) {
+            const activeTab = document.querySelector('.tab-content.active');
+            if (!activeTab) {
+                e.preventDefault(); // Her ihtimale karşı
+                return;
+            }
+
+            // 1. Tutar Kontrolü
+            let amountInput;
+            if (activeTab.id === 'cek-tab') {
+                amountInput = activeTab.querySelector('input[name="Tutar"]');
+            } else {
+                amountInput = activeTab.querySelector('input[name="YTutar"]');
+            }
+
+            if (!amountInput.value || parseFloat(amountInput.value) <= 0) {
+                alert("Lütfen geçerli bir tutar giriniz.");
+                e.preventDefault(); // Formun gönderilmesini engelle
+                amountInput.focus();
+                return; // Fonksiyonu sonlandır
+            }
+
+            // 2. Yöntem (Araç Türü) ve Seçim Kontrolü
+            const selectedAracTuruRadio = activeTab.querySelector('input[name="AracTuru"]:checked');
+
+            // Eğer "Hesaptan" veya "Karttan" gibi bir yöntem seçilmemişse uyar
+            if (!selectedAracTuruRadio) {
+                alert("Lütfen bir işlem yöntemi seçiniz (Hesaptan veya Karttan).");
+                e.preventDefault();
+                return;
+            }
+
+            const aracTuruValue = selectedAracTuruRadio.value;
+
+            // Seçilen yönteme göre hesap veya kartın seçilip seçilmediğini kontrol et
+            if (aracTuruValue === 'hesap') {
+                const selectedAccount = activeTab.querySelector('input[name="SecilenHesapId"]:checked');
+                if (!selectedAccount) {
+                    alert("Lütfen işlem yapmak için bir hesap seçiniz.");
+                    e.preventDefault();
+                    return;
+                }
+            } else if (aracTuruValue === 'kart') {
+                const selectedCard = activeTab.querySelector('input[name="SecilenKartId"]:checked');
+                if (!selectedCard) {
+                    alert("Lütfen işlem yapmak için bir kart seçiniz.");
+                    e.preventDefault();
+                    return;
+                }
+            }
+        });
+    });
+</script>

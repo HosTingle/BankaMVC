@@ -1,0 +1,99 @@
+﻿
+@model BankaMVC.Models.Somut.BankaYonetimPaneli.Models.LimitArtirmaIstegi
+
+@{
+    ViewBag.Title = "Limit Artırma İsteği Detayı";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="page-title">Limit Artırma İsteği Detayı</h2>
+
+<div class="card">
+    <div class="card-header">
+        <div>İstek Detayı</div>
+        <div>
+            <span class="badge @(Model.Durum ==  BankaMVC.Models.Somut.BankaYonetimPaneli.Models.IstekDurumu.Beklemede ? "badge-primary" :
+                                Model.Durum ==  BankaMVC.Models.Somut.BankaYonetimPaneli.Models.IstekDurumu.Onaylandi ? "badge-success" : "badge-danger")">
+                @Model.Durum
+            </span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Müşteri ID:</label>
+                    <div class="form-control">@Model.MusteriId</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Müşteri Adı:</label>
+                    <div class="form-control">@Model.MusteriAdiSoyadi</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kart No:</label>
+                    <div class="form-control">@Model.KartNo</div>
+             
+
+                </div>
+   
+        
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Talep Edilen Limit:</label>
+                    <div class="form-control">@Model.TalepEdilenLimit.ToString("N2") ₺</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Başvuru Tarihi:</label>
+                    <div class="form-control">@Model.BasvuruTarihi.ToString("dd.MM.yyyy HH:mm")</div>
+                </div>
+             
+                @if (Model.OnaylananLimit.HasValue)
+                {
+                    <div class="form-group">
+                        <label class="form-label">Onaylanan Limit:</label>
+                        <div class="form-control">@Model.OnaylananLimit.Value.ToString("N2") ₺</div>
+                    </div>
+                }
+                <div class="form-group">
+                    <label class="form-label">Mevcut Limit:</label>
+                    <div class="form-control">@Model.MevcutLimit.ToString("N2") ₺</div>
+                </div>
+             
+            </div>
+        </div>
+        
+        @if (Model.Durum == BankaMVC.Models.Somut.BankaYonetimPaneli.Models.IstekDurumu.Beklemede)
+        {
+            <hr />
+            <form method="post" action="@Url.Action("Onayla", new { id = Model.Id })">
+                <input type="hidden" name="kartNo" value="@Model.KartNo" />
+                <input type="hidden" name="mevcutLimit" value="@Model.MevcutLimit" />
+                <div class="form-group">
+                    <label class="form-label">Onaylanacak Limit:</label>
+                    <input type="number" name="onaylananLimit" class="form-control" value="@Model.TalepEdilenLimit" />
+                    <small class="text-muted">Onaylanacak limiti giriniz.</small>
+                </div>
+
+                <div class="d-flex">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Onayla
+                    </button>
+                    <button type="button" class="btn btn-danger ml-2" onclick="document.getElementById('reddetForm').submit();">
+                        <i class="fas fa-times"></i> Reddet
+                    </button>
+                </div>
+            </form>
+            <form id="reddetForm" method="post" action="@Url.Action("Reddet", new { id = Model.Id })" style="display: none;">
+                 <input type="hidden" name="kartNo" value="@Model.KartNo" />
+                <input type="number" name="onaylananLimit" class="form-control" value="@Model.TalepEdilenLimit" min="@Model.MevcutLimit" max="@Model.TalepEdilenLimit" step="100" />
+            </form>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="@Url.Action("Index")" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i> Listeye Dön
+    </a>
+</div>

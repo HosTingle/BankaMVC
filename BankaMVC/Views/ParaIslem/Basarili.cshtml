@@ -1,0 +1,55 @@
+﻿@model BankaMVC.Models.ViewModels.ParaIslemViewModel
+@{
+    ViewData["Title"] = "İşlem Başarılı";
+    Layout = "~/Views/Shared/_ParaIslemLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Header -->
+            <div class="header-section">
+                <a href="@Url.Action("Index")" class="back-btn">←</a>
+                <h2>İşlem Başarılı</h2>
+            </div>
+
+            <!-- Content -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <!-- Success Icon -->
+                    <div class="success-icon">
+                        <div class="success-circle">
+                            ✓
+                        </div>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div class="success-message">
+                        <h2>İşlem Tamamlandı!</h2>
+                        <p>@Model.IslemTuru işleminiz başarıyla gerçekleştirildi.</p>
+                    </div>
+
+                    <!-- Transaction Details -->
+                    <div class="transaction-details">
+                        <div class="detail-row">
+                            <span>İşlem Türü:</span>
+                            <span>@Model.IslemTuru</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Tutar:</span>
+                            <span class="amount">₺@(((decimal?)Model.Tutar ?? Model.YTutar ?? 0).ToString("N2"))</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>İşlem No:</span>
+                            <span class="transaction-no">@Model.SecilenHesapId</span>
+                        </div>
+                    </div>
+
+                    <!-- New Transaction Button -->
+                    <a href="@Url.Action("Index")" class="submit-btn" style="margin-bottom: 10px;">Geri Dön</a>
+                    <a href="@Url.Action("Index", "GostergePaneli")" class="submit-btn">Anasayfaya Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

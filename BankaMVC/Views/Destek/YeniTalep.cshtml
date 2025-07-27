@@ -1,0 +1,77 @@
+﻿@model BankaMVC.Models.Somut.DestekTalebi
+@{
+    ViewData["Title"] = "Yeni Destek Talebi";
+}
+
+<link rel="stylesheet" href="~/css/destek.css" />
+
+<div class="destek-container">
+    <div class="destek-content">
+        <header class="transfer-header">
+            <div class="header-content">
+                <a href="@Url.Action("index", "gostergepaneli")" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                </a>
+                <h1>Destek Merkezi</h1>
+            </div>
+        </header>
+
+        <!-- Sekmeler -->
+        <div class="sekme-container">
+            <div class="sekme-buttons">
+                <a href="@Url.Action("Index")" class="sekme-btn">
+                    <i class="fas fa-comments"></i> Taleplerim
+                </a>
+                <a href="@Url.Action("YeniTalep")" class="sekme-btn active">
+                    <i class="fas fa-plus"></i> Yeni Talep
+                </a>
+            </div>
+        </div>
+
+        <!-- Yeni Talep Formu -->
+        <div class="form-container">
+            <div class="form-header">
+                <h2><i class="fas fa-plus"></i> Yeni Destek Talebi</h2>
+            </div>
+
+            <form asp-action="YeniTalep" method="post" class="talep-form">
+                <div class="form-row">
+
+                    <select id="kategori" name="Kategori" class="form-control kategori-select">
+                        <option value="">Kategori seçin</option>
+                        <option value="Hesap İşlemleri">Hesap İşlemleri</option>
+                        <option value="Kart İşlemleri">Kart İşlemleri</option>
+                        <option value="Para Transferi">Para Transferi</option>
+                        <option value="Mobil Uygulama">Mobil Uygulama</option>
+                        <option value="Güvenlik">Güvenlik</option>
+                        <option value="Diğer">Diğer</option>
+                    </select>
+
+                    <div class="form-group">
+    
+                        <input asp-for="Konu" class="form-control kategori-selecte" placeholder="Talep konusunu yazın" required />
+                        <span asp-validation-for="Konu" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Mesaj">Mesaj</label>
+                    <textarea asp-for="Mesaj" class="form-control" rows="6" placeholder="Sorununuzu detaylı olarak açıklayın..." required></textarea>
+                    <span asp-validation-for="Mesaj" class="text-danger"></span>
+                </div>
+
+                <div class="form-actions">
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">İptal</a>
+                    <button type="submit" class="btn btn-primary">Talep Gönder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/destek.js"></script>
+}

@@ -1,0 +1,364 @@
+﻿
+@model BankaMVC.Models.ViewModels.GostergePaneliViewModel
+@{
+    ViewData["Title"] = "Dashboard - Mersinbank";
+    Layout = "~/Views/Shared/_GostergePaneliLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Yan Menü Overlay -->
+    <div class="menu-overlay" id="menu-overlay"></div>
+
+    <!-- Yan Menü -->
+    <div class="side-menu" id="side-menu">
+        <div class="menu-header">
+            <h2>Menü</h2>
+            <button class="close-menu-btn" id="close-menu">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="menu-content">
+            <!-- Kullanıcı Bilgisi -->
+            <div class="user-info">
+                <div class="user-avatar-large">
+                    <span>M</span>
+                </div>
+                <div class="user-details">
+                    <h3>@Model.Kullanici.AdSoyad</h3>
+                    <p>Sube: @Model.Kullanici.Sube</p>
+                    <p>Email: @Model.Kullanici.Email</p>
+                    <p>Telefon: @Model.Kullanici.Telefon</p>
+     
+                </div>
+            </div>
+
+            <!-- Menü Öğeleri -->
+            <nav class="menu-nav">
+                <a onclick="location.href='@Url.Action("index", "hesaplar")'" class="menu-item" data-action="hesaplar">
+                    <div class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 10 L12 3 L21 10" />
+                            <rect x="5" y="10" width="2" height="10" />
+                            <rect x="11" y="10" width="2" height="10" />
+                            <rect x="17" y="10" width="2" height="10" />
+                            <line x1="2" y1="20" x2="22" y2="20" />
+                        </svg>
+                    </div>
+                    <span>Hesaplarım</span>
+                    <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </a>
+
+
+                <a onclick="location.href='@Url.Action("index", "kart")'" class="menu-item" data-action="kartlar">
+                    <div class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                    <span>Kartlar</span>
+                    <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </a>
+
+                <a onclick="location.href='@Url.Action("Index", "Varliklarim")'" class="menu-item" data-action="transfer">
+                    <div class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="10" width="3" height="10"></rect>
+                            <rect x="10" y="6" width="3" height="14"></rect>
+                            <rect x="17" y="2" width="3" height="18"></rect>
+                        </svg>
+                    </div>
+                    <span>Varlıklarım</span>
+                    <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </a>
+
+                <a onclick="location.href='@Url.Action("index", "paratransferi")'" class="menu-item" data-action="transfer">
+                    <div class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="17 1 21 5 17 9"></polyline>
+                            <line x1="21" y1="5" x2="3" y2="5"></line>
+                            <polyline points="7 23 3 19 7 15"></polyline>
+                            <line x1="3" y1="19" x2="21" y2="19"></line>
+                        </svg>
+                    </div>
+                    <span>Para Transferi</span>
+                    <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </a>
+
+                <a onclick="location.href='@Url.Action("index", "paraislem")'" class="menu-item" data-action="transfer">
+                    <div class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <polyline points="19,12 12,19 5,12"></polyline>
+                        </svg>
+                    </div>
+                    <span>Para Çek/Yatır</span>
+                    <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </a>
+
+                <a onclick="location.href='@Url.Action("index", "destek")'" class="menu-item" data-action="destek">
+                    <div class="menu-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4"></path>
+                            <path d="M21 12c.552 0 1-.448 1-1V8a2 2 0 0 0-2-2h-1l-1-2h-3l-1 2H9L8 4H5a2 2 0 0 0-2 2v3c0 .552.448 1 1 1"></path>
+                            <path d="M3 12v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3"></path>
+                        </svg>
+                    </div>
+                    <span>Destek Talebi</span>
+                    <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </a>
+
+         
+            </nav>
+        </div>
+
+        <!-- Alt Menü -->
+        <div class="menu-footer">
+            <a href="#" class="footer-item" data-action="ayarlar">
+                <div class="footer-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <span>Ayarlarım</span>
+            </a>
+
+            <a href="/GostergePaneli/Cikis" class="footer-item logout" data-action="cikis">
+                <div class="footer-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16,17 21,12 16,7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </div>
+                <span>Çıkış</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Ana İçerik -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="menu-btn" id="menu-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <h1>Mersin Banka</h1>
+                </div>
+                <div class="user-avatar">
+                    <span>M</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Ana Sayfa İçeriği -->
+        <main class="dashboard-main">
+            <!-- Hesaplarım -->
+            <section class="accounts-section">
+                <div class="section-header">
+                    <h2>Hesaplarım</h2>
+                    <span class="counter" id="hesap-counter">1 / @Model.Hesaplar.Count</span>
+                </div>
+
+                <div class="card-slider" data-section="hesap">
+                    <div class="card-container" id="hesap-container">
+                        @if (Model.Hesaplar != null && Model.Hesaplar.Any())
+                        {
+                        @for (int i = 0; i < Model.Hesaplar.Count; i++)
+                        {
+                            var hesap = Model.Hesaplar[i];
+                            <div class="account-card">
+                                <div class="card-header">
+                                    <span class="card-type">@hesap.HesapTipi</span>
+                                    <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <div class="card-content">
+                                    <p class="card-number">@hesap.HesapNo</p>
+                                    <div class="balance-section">
+                                        <p class="balance-label">Kullanılabilir Bakiye</p>
+                                        @{
+                                            var culture = hesap.ParaBirimi switch
+                                            {
+                                                "USD" => new System.Globalization.CultureInfo("en-US"),
+                                                "EUR" => new System.Globalization.CultureInfo("en-IE"),
+                                                "TL" => new System.Globalization.CultureInfo("tr-TR"),
+                                                _ => System.Globalization.CultureInfo.InvariantCulture
+                                            };
+                                        }
+                                        <p class="balance-amount">@hesap.Bakiye.ToString("C", culture)</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Hesabınız bulunmamaktadır</p>
+                        }
+                    </div>
+
+                    <!-- Hesap Dots -->
+                    <div class="dots-container">
+                        @for (int i = 0; i < Model.Hesaplar.Count; i++)
+                        {
+                            <button class="dot @(i == 0 ? "active" : "")" data-index="@i" data-type="hesap"></button>
+                        }
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="cards-section">
+                <div class="section-header">
+                    <h2>Kartlarım</h2>
+                    <span class="counter" id="kart-counter">
+                        @(Model.Kartlar != null && Model.Kartlar.Any() ? $"1 / {Model.Kartlar.Count}" : "0 / 0")
+                    </span>
+                </div>
+
+                <div class="card-slider" data-section="kart">
+                    <div class="card-container kart-container" id="kart-container">
+                        @if (Model.Kartlar != null && Model.Kartlar.Any())
+                        {
+                            for (int i = 0; i < Model.Kartlar.Count; i++)
+                            {
+                                var kart = Model.Kartlar[i];
+                                <div class="credit-card">
+                                    <div class="card-header">
+                                        <span class="card-type">@kart.KartTipi</span>
+                                        <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                                        </svg>
+                                    </div>
+                                    <div class="card-content">
+                                        <p class="card-number">@kart.KartNumarasi</p>
+                                        <div class="card-details">
+                                            <div class="expiry">
+                                                <p class="detail-label">Son Kullanma</p>
+                                                <p class="detail-value">@kart.SonKullanma.ToString("MM/yyyy")</p>
+                                            </div>
+                                            @if (kart.Limit.HasValue && kart.Limit > 0)
+                                            {
+                                                <div class="limit">
+                                                    <p class="detail-label">Limit</p>
+                                                    <p class="detail-value">@kart.Limit.Value.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Kartınız bulunmamaktadır.</p>
+                        }
+                    </div>
+
+                    <div class="dots-container">
+                        @if (Model.Kartlar != null)
+                        {
+                            for (int i = 0; i < Model.Kartlar.Count; i++)
+                            {
+                                <button class="dot @(i == 0 ? "active" : "")" data-index="@i" data-type="kart"></button>
+                            }
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hızlı İşlemler -->
+            <section class="services-section">
+                <h2>Hızlı İşlemler</h2>
+                <div class="services-grid">
+                    <div class="service-item" onclick="location.href='@Url.Action("Index", "Varliklarim")'">
+                        <div class="service-icon bg-blue">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path>
+                                <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path>
+                            </svg>
+                        </div>
+                        <h3>Varlıklarım</h3>
+                        <svg class="chevron"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9,18 15,12 9,6"></polyline>
+                        </svg>
+                    </div>
+
+                    <div class="service-item" onclick="location.href='@Url.Action("Index", "paraislem")'" style="cursor:pointer;">
+                        <div class="service-icon bg-green">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <polyline points="19,12 12,19 5,12"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Para Çek/Yatır</h3>
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9,18 15,12 9,6"></polyline>
+                        </svg>
+                    </div>
+
+                    <div class="service-item" onclick="location.href='@Url.Action("Index", "sonhareketler")'" style="cursor:pointer;">
+                        <div class="service-icon bg-orange">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12,6 12,12 16,14"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Son Hareketler</h3>
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9,18 15,12 9,6"></polyline>
+                        </svg>
+                    </div>
+
+                    <div class="service-item" onclick="location.href='@Url.Action("index", "destek")'">
+                        <div class="service-icon bg-purple">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14,2 14,8 20,8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10,9 9,9 8,9"></polyline>
+                            </svg>
+                        </div>
+                        <h3>Destek Talebi</h3>
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9,18 15,12 9,6"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/gostergepaneli.js"></script>
+}

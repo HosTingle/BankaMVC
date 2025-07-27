@@ -1,0 +1,762 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Banka Yönetim Paneli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+    <style>
+        :root {
+            --primary-color: #0a3d62;
+            --primary-light: #1e5f8c;
+            --primary-dark: #072a43;
+            --secondary-color: #e74c3c;
+            --accent-color: #f1c40f;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+            --info-color: #3498db;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            --border-radius: 0.375rem;
+            --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        /* Genel Stiller */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 2000px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Stili */
+        .header {
+            background-color: #2059e2;
+            color: white;
+            padding: 1rem 2rem; /* sağ-sol boşluk eklendi */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            height: 70px;
+            display: flex;
+            justify-content: space-between; /* sol ve sağa itmek için */
+            align-items: center; /* dikey hizalama */
+        }
+
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .left-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem; /* buton ile logo arası boşluk */
+        }
+
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+        }
+
+            .logo i {
+                margin-right: 0.75rem;
+                font-size: 1.75rem;
+            }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: blue;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar Stili */
+        .sidebar {
+            width: 260px;
+            background-color: white;
+            height: calc(100vh - 70px);
+            position: fixed;
+            left: 0;
+            top: 70px;
+            box-shadow: var(--box-shadow);
+            z-index: 1020;
+            transition: var(--transition);
+            overflow-y: auto;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1.25rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+
+            .nav-link:hover {
+                background-color: var(--gray-100);
+                color: var(--primary-color);
+            }
+
+            .nav-link.active {
+                background-color: rgba(10, 61, 98, 0.1);
+                color: var(--primary-color);
+                border-left-color: var(--primary-color);
+            }
+
+            .nav-link i {
+                margin-right: 0.75rem;
+                width: 1.25rem;
+                text-align: center;
+                font-size: 1.125rem;
+            }
+
+        /* Ana İçerik Alanı */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem 1.5rem;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+            transition: var(--transition);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        /* Kart Stili */
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+        }
+
+        .card-header {
+            padding: 1rem 1.25rem;
+            background-color: white;
+            border-bottom: 1px solid var(--gray-200);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--primary-color);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        /* Tablo Stili */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+            .table th, .table td {
+                padding: 0.875rem 1.25rem;
+                text-align: left;
+                vertical-align: middle;
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .table th {
+                font-weight: 600;
+                color: var(--primary-color);
+                background-color: rgba(10, 61, 98, 0.05);
+                white-space: nowrap;
+            }
+
+            .table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .table tr:hover td {
+                background-color: rgba(10, 61, 98, 0.02);
+            }
+
+        /* Buton Stilleri */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            user-select: none;
+        }
+
+            .btn i {
+                margin-right: 0.5rem;
+            }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: var(--primary-dark);
+            }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+            .btn-success:hover {
+                background-color: #219653;
+            }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #a93226;
+            }
+
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+            .btn-info:hover {
+                background-color: #2980b9;
+            }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+            .btn-outline-primary:hover {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+        /* Badge Stilleri */
+        .badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 50rem;
+        }
+
+        .badge-primary {
+            background-color: rgba(10, 61, 98, 0.1);
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .badge-danger {
+            background-color: rgba(192, 57, 43, 0.1);
+            color: var(--danger-color);
+        }
+
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+
+        .badge-info {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--info-color);
+        }
+
+        /* Form Stilleri */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--gray-700);
+            background-color: white;
+            background-clip: padding-box;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                outline: 0;
+                box-shadow: 0 0 0 0.25rem rgba(10, 61, 98, 0.25);
+            }
+
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 2.25rem 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--gray-700);
+            background-color: white;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            appearance: none;
+        }
+
+            .form-select:focus {
+                border-color: var(--primary-color);
+                outline: 0;
+                box-shadow: 0 0 0 0.25rem rgba(10, 61, 98, 0.25);
+            }
+
+        /* Dashboard Özet Kartları */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--box-shadow-lg);
+            }
+
+        .dashboard-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .dashboard-card-title {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .dashboard-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .dashboard-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--gray-800);
+        }
+
+        .dashboard-card-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-top: auto;
+        }
+
+            .dashboard-card-description a {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+                .dashboard-card-description a:hover {
+                    text-decoration: underline;
+                }
+
+        .bg-blue {
+            background-color: rgba(10, 61, 98, 0.1);
+            color: var(--primary-color);
+        }
+
+        .bg-green {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .bg-red {
+            background-color: rgba(192, 57, 43, 0.1);
+            color: var(--danger-color);
+        }
+
+        .bg-yellow {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+
+        /* Yardımcı Sınıflar */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -0.75rem;
+            margin-left: -0.75rem;
+        }
+
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding-right: 0.75rem;
+            padding-left: 0.75rem;
+        }
+
+        .col-md-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding-right: 0.75rem;
+            padding-left: 0.75rem;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .ml-2 {
+            margin-left: 0.5rem;
+        }
+
+        .d-inline-block {
+            display: inline-block;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-primary {
+            color: var(--primary-color);
+        }
+
+        .text-success {
+            color: var(--success-color);
+        }
+
+        .text-danger {
+            color: var(--danger-color);
+        }
+
+        .text-warning {
+            color: var(--warning-color);
+        }
+
+        .text-info {
+            color: var(--info-color);
+        }
+
+        hr {
+            margin: 1.5rem 0;
+            color: inherit;
+            background-color: currentColor;
+            border: 0;
+            opacity: 0.25;
+        }
+
+        /* Responsive Tasarım */
+        (max-width: 1200px) {
+            .sidebar
+
+        {
+            width: 70px;
+            overflow: hidden;
+        }
+
+        .nav-link span {
+            display: none;
+        }
+
+        .main-content {
+            margin-left: 70px;
+        }
+
+        }
+
+        (max-width: 10000px) {
+            .mobile-toggle
+
+        {
+            display: block;
+        }
+
+        .sidebar {
+            width: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+            .sidebar.show {
+                width: 260px;
+                opacity: 1;
+                visibility: visible;
+            }
+
+                .sidebar.show .nav-link span {
+                    display: inline;
+                }
+
+        .main-content {
+            margin-left: 0;
+            padding: 1.5rem 1rem;
+        }
+
+        .dashboard-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .table {
+            min-width: 650px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="left-group">
+                <button class="mobile-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="@Url.Action("Index", "adminpanel")" class="logo">
+                    <i class="fas fa-university"></i> Banka Yönetim Paneli
+                </a>
+            </div>
+            <div class="user-info d-flex align-items-center gap-2">
+                <div class="user-avatar">A</div>
+
+
+                <!-- Logout Button -->
+                <form method="post" action="@Url.Action("Cikis", "AdminPanel")" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm ml-2">
+                        <i class="fas fa-sign-out-alt"></i> Çıkış
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="sidebar" id="sidebar">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "adminpanel")" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "adminpanel" ? "active" : "")">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Admin Panel</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "HesapIstekleri")" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "HesapIstekleri" ? "active" : "")">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Hesap İstekleri</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "KartIstekleri")" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "KartIstekleri" ? "active" : "")">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Kart İstekleri</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "DestekTalepleri")" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "DestekTalepleri" ? "active" : "")">
+                    <i class="fas fa-headset"></i>
+                    <span>Destek Talepleri</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index", "LimitArtirma")" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "LimitArtirma" ? "active" : "")">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Limit Artırma</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        @RenderBody()
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        // Mobil menü toggle
+        $(document).ready(function () {
+            $('#sidebarToggle').click(function () {
+                $('#sidebar').toggleClass('show');
+            });
+
+            // Ekran boyutu değiştiğinde sidebar'ı gizle
+            $(window).resize(function () {
+                if ($(window).width() <= 768) {
+                    $('#sidebar').removeClass('show');
+                }
+            });
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

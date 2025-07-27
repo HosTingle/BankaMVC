@@ -1,0 +1,80 @@
+﻿
+@model IEnumerable<BankaMVC.Models.Somut.BankaYonetimPaneli.Models.KartAcmaIstegi>
+
+@{
+    ViewBag.Title = "Kart Açma İstekleri";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="page-title">Kart Açma İstekleri</h2>
+
+<div class="card">
+    <div class="card-header">
+        <div>Tüm İstekler</div>
+        <div>
+            <a href="#" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-filter"></i> Filtrele
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-primary ml-2">
+                <i class="fas fa-download"></i> Dışa Aktar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Müşteri</th>
+                        <th>Kart Tipi</th>
+                        <th>Talep Edilen Limit</th>
+                        <th>Başvuru Tarihi</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.MusteriAdiSoyadi</td>
+                            <td>
+                                @if (item.KartTipi == BankaMVC.Models.Somut.BankaYonetimPaneli.Models.KartTipi.Kredi)
+                                {
+                                    <span class="badge badge-info">Kredi Kartı</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-primary">Banka Kartı</span>
+                                }
+                            </td>
+                            <td>@(item.KartTipi == BankaMVC.Models.Somut.BankaYonetimPaneli.Models.KartTipi.Kredi ? item.TalepEdilenLimit.ToString("N2") + " ₺" : "-")</td>
+                            <td>@item.BasvuruTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                @switch (item.Durum)
+                                {
+                                    case BankaMVC.Models.Somut.BankaYonetimPaneli.Models.IstekDurumu.Beklemede:
+                                        <span class="badge badge-primary">Beklemede</span>
+                                        break;
+                                    case BankaMVC.Models.Somut.BankaYonetimPaneli.Models.IstekDurumu.Onaylandi:
+                                        <span class="badge badge-success">Onaylandı</span>
+                                        break;
+                                    case BankaMVC.Models.Somut.BankaYonetimPaneli.Models.IstekDurumu.Reddedildi:
+                                        <span class="badge badge-danger">Reddedildi</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Detay", new { id = item.Id })" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Detay
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,215 @@
+﻿@model BankaMVC.Models.ViewModels.YeniHesapViewModel
+
+@{
+    ViewData["Title"] = "Yeni Hesap Oluştur";
+}
+
+<link rel="stylesheet" href="~/css/yeni-hesap.css" />
+
+<div class="yeni-hesap-container">
+    <div class="yeni-hesap-content">
+
+        <header class="transfer-header">
+            <div class="header-content">
+                <a href="@Url.Action("Index", "Hesaplar")" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                </a>
+                <h1>Yeni Hesap Oluştur</h1>
+            </div>
+        </header>
+
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form asp-action="YeniHesapOlustur" method="post" class="yeni-hesap-form">
+            @Html.AntiForgeryToken()
+
+            <!-- Hesap Tipi Seçimi -->
+            <div class="form-section">
+                <h2 class="section-title">Hesap Tipi Seçiniz</h2>
+                <div class="hesap-tipi-grid">
+                    @foreach (var tip in Model.HesapTipleri)
+                    {
+                        <div class="hesap-tipi-card">
+                            <input type="radio"
+                                   id="hesapTipi_@tip.Value"
+                                   name="HesapTipi"
+                                   value="@tip.Value"
+                            @(Model.HesapTipi == tip.Value ? "checked" : "") />
+                            <label for="hesapTipi_@tip.Value" class="hesap-tipi-label">
+                                <div class="card-icon">
+                                    @if (tip.Value == "Vadesiz")
+                                    {
+                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                                        </svg>
+                                    }
+                                </div>
+                                <h3 class="card-title">@tip.Text</h3>
+                                <p class="card-description">@tip.Description</p>
+                                <ul class="card-features">
+                                    @foreach (var feature in tip.Features)
+                                    {
+                                        <li>@feature</li>
+                                    }
+                                </ul>
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Para Birimi Seçimi -->
+            <div class="form-section">
+                <h2 class="section-title">Para Birimi Seçiniz</h2>
+                <div class="para-birimi-grid">
+                    @foreach (var para in Model.ParaBirimleri)
+                    {
+                        var isDisabled = para.Value != "TL"; // TL dışındaki para birimlerini devre dışı bırak
+                        <div class="para-birimi-card @(isDisabled ? "disabled" : "")">
+                            <input type="radio"
+                                   id="paraBirimi_@para.Value"
+                                   name="ParaBirimi"
+                                   value="@para.Value"
+                            @(Model.ParaBirimi == para.Value ? "checked" : "")
+                            @(isDisabled ? "disabled" : "") />
+                            <label for="paraBirimi_@para.Value" class="para-birimi-label">
+                                <div class="currency-symbol">@para.Symbol</div>
+                                <h3 class="currency-title">@para.Text</h3>
+                                <p class="currency-description">@para.Description</p>
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+            <!-- Seçim Özeti -->
+            <div class="form-section secim-ozeti" id="secimOzeti" style="display: none;">
+                <h2 class="section-title">Seçim Özeti</h2>
+                <div class="ozet-card">
+                    <div class="ozet-item">
+                        <span class="ozet-label">Hesap Tipi:</span>
+                        <span class="ozet-value" id="secilenHesapTipi">-</span>
+                    </div>
+                    <div class="ozet-item">
+                        <span class="ozet-label">Para Birimi:</span>
+                        <span class="ozet-value" id="secilenParaBirimi">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="submit" class="btn-hesap-olustur" id="btnHesapOlustur" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    Hesabı Oluştur
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const hesapTipiInputs = document.querySelectorAll('input[name="HesapTipi"]')
+            const paraBirimiInputs = document.querySelectorAll('input[name="ParaBirimi"]')
+            const secimOzeti = document.getElementById("secimOzeti")
+            const btnHesapOlustur = document.getElementById("btnHesapOlustur")
+
+            const secilenHesapTipiSpan = document.getElementById("secilenHesapTipi")
+            const secilenParaBirimiSpan = document.getElementById("secilenParaBirimi")
+
+            function updateSummary() {
+                const secilenHesapTipi = document.querySelector('input[name="HesapTipi"]:checked')
+                const secilenParaBirimi = document.querySelector('input[name="ParaBirimi"]:checked')
+
+                if (secilenHesapTipi) {
+                    const hesapTipiLabel = document.querySelector(`label[for="hesapTipi_${secilenHesapTipi.value}"] .card-title`)
+                    secilenHesapTipiSpan.textContent = hesapTipiLabel.textContent
+                } else {
+                    secilenHesapTipiSpan.textContent = "-"
+                }
+
+                if (secilenParaBirimi) {
+                    const paraBirimiLabel = document.querySelector(
+                        `label[for="paraBirimi_${secilenParaBirimi.value}"] .currency-title`,
+                    )
+                    const paraBirimiSymbol = document.querySelector(
+                        `label[for="paraBirimi_${secilenParaBirimi.value}"] .currency-symbol`,
+                    )
+                    secilenParaBirimiSpan.textContent = paraBirimiLabel.textContent + " " + paraBirimiSymbol.textContent
+                } else {
+                    secilenParaBirimiSpan.textContent = "-"
+                }
+
+                if (secilenHesapTipi || secilenParaBirimi) {
+                    secimOzeti.style.display = "block"
+                } else {
+                    secimOzeti.style.display = "none"
+                }
+
+                if (secilenHesapTipi && secilenParaBirimi) {
+                    btnHesapOlustur.disabled = false
+                } else {
+                    btnHesapOlustur.disabled = true
+                }
+            }
+
+            hesapTipiInputs.forEach((input) => {
+                input.addEventListener("change", updateSummary)
+            })
+
+            paraBirimiInputs.forEach((input) => {
+                input.addEventListener("change", updateSummary)
+            })
+
+            updateSummary()
+
+            const form = document.querySelector(".yeni-hesap-form")
+            form.addEventListener("submit", () => {
+                btnHesapOlustur.innerHTML = `
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-spin">
+                                <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                            </svg>
+                            Hesap Oluşturuluyor...
+                        `
+                btnHesapOlustur.disabled = true
+            })
+        })
+
+        const style = document.createElement("style")
+        style.textContent = `
+                    .animate-spin {
+                        animation: spin 1s linear infinite;
+                    }
+
+        spin {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+                `
+        document.head.appendChild(style)
+    </script>
+}

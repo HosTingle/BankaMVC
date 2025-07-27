@@ -1,0 +1,106 @@
+﻿@model List<BankaMVC.Models.DTOs.SonHareketlerDto>
+@if (Model == null || !Model.Any())
+{
+    <div class="bos-islem-mesaj">
+        <p >Herhangi bir işlem bulunmamaktadır.</p> 
+    </div>
+}
+else{
+@foreach (var islem in Model)
+{
+    string sign = "+";
+    string tutarClass = "positive";
+
+    switch (islem.IslemTipi.ToLower())
+    {
+        case "para çekme":
+            sign = "-";
+            tutarClass = "negative";
+            break;
+        case "para yatırma":
+            sign = "+";
+            tutarClass = "positive";
+            break;
+        case "eft":
+        case "havale":
+        case "para transferi":
+            sign = "-"; 
+            tutarClass = "negative";
+            break;
+        default:
+   
+            if (islem.Tutar < 0)
+            {
+                sign = "-";
+                tutarClass = "negative";
+            }
+            else
+            {
+                sign = "+";
+                tutarClass = "positive";
+            }
+            break;
+    }
+
+    string formattedAmount = Math.Abs(islem.Tutar).ToString("N2") + " ₺";
+
+        string iconClass = "";
+        string iconPartialName = "";
+
+        switch (islem.IslemTipi.ToLower())
+        {
+            case "para çekme":
+                iconClass = "atm-icon";
+                iconPartialName = "_AtmIcon"; 
+                break;
+            case "para yatırma":
+                iconClass = "deposit-icon";
+                iconPartialName = "_DepositIcon";
+                break;
+            case "para transferi":
+                iconClass = "transfer-icon";
+                iconPartialName = "_TransferIcon";
+                break;
+            default:
+                iconClass = "default-icon";
+                iconPartialName = "_DefaultIcon";
+                break;
+        }
+
+        <div class="islem-item">
+            <div class="islem-content">
+                <div class="islem-icon-container">
+                    <div class="islem-icon @iconClass @tutarClass">
+            
+                        <partial name="@iconPartialName" />
+                    </div>
+                </div>
+
+                <div class="islem-details">
+                    <div class="islem-header">
+                        <div class="islem-info">
+            
+                            <h4 class="islem-turu">@islem.IslemTipi</h4>
+                            <p class="islem-aciklama">@islem.Aciklama</p>
+                        </div>
+                        <div class="islem-amount">
+                            <p class="islem-tutar @tutarClass">@sign @formattedAmount</p>
+                            <p class="islem-tarih">@islem.Tarih.ToString("dd.MM.yyyy HH:mm")</p>
+                        </div>
+                    </div>
+
+                    <div class="islem-footer">
+                        <div class="islem-status">
+                            @{
+                                var durumClass = islem.Durum == "Başarılı Transfer" ? "completed" : "failed";
+                            }
+                            <span class="status-badge @durumClass">@islem.Durum</span>
+                        </div>
+
+                        <p class="islem-bakiye">Bakiye: @islem.GuncelBakiye.ToString("N2") ₺</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+}
+}

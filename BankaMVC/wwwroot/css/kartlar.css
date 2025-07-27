@@ -1,0 +1,453 @@
+﻿/* Header */
+/* Header */
+.transfer-header {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: white;
+    margin-bottom: 1rem;
+    padding: 0.6rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+.back-btn {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.15s ease;
+}
+
+    .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+.header-content h1 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+.yeni-hesap-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+    .yeni-hesap-btn:hover {
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+    }
+
+
+
+
+
+
+
+
+.kart-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 1.5rem;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.kart-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.kart-baslik {
+    text-align: center;
+    padding: 2rem 0;
+    margin-bottom: 1rem;
+}
+
+    .kart-baslik h1 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+        letter-spacing: -0.025em;
+    }
+
+.sekme-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 6px;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.sekme-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.sekme-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+    .sekme-btn.active {
+        background-color: #2158e1;
+        color: white;
+        box-shadow: 0 2px 4px rgba(33, 88, 225, 0.3);
+    }
+
+    .sekme-btn:hover:not(.active) {
+        background-color: #f1f5f9;
+        color: #475569;
+    }
+
+.kart-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+@media (max-width: 768px) {
+    .kart-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+.kart-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .kart-card:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        transform: translateY(-4px);
+    }
+
+.kart-gorseli {
+    height: 200px;
+    padding: 1.5rem;
+    color: white;
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.kredi-kart {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.banka-kart {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.kart-ust {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.kart-icon-container {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kart-icon {
+    font-size: 1.5rem;
+}
+
+.kart-bilgi-ust h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.durum-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+    .durum-badge.aktif {
+        background-color: white;
+        color: black;
+    }
+
+    .durum-badge.pasif {
+        background-color: black;
+        color: white;
+    }
+
+.kart-chip {
+    position: absolute;
+    top: 80px;
+    left: 1.5rem;
+    width: 32px;
+    height: 24px;
+    background: #fbbf24;
+    border-radius: 4px;
+}
+
+.kart-numara-container {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+}
+
+.kart-numara-label {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    margin-bottom: 0.25rem;
+}
+
+.kart-numara {
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.kart-alt-bilgi {
+    padding: 1.5rem;
+}
+
+.bakiye-container {
+    margin-bottom: 1rem;
+}
+
+.bakiye-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.bakiye-miktar {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.kart-detay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detay-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.detay-deger {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+}
+
+.cvv .detay-deger {
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+}
+
+.kart-yok {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #64748b;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.kart-yok-baslik {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #475569;
+}
+
+.kart-yok-aciklama {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    color: #64748b;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 1rem 0;
+}
+.limit-artirma {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.limit-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+    .limit-btn:hover {
+        background-color: #0056b3;
+    }
+.limit-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.limit-dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    width: 400px;
+    font-family: "Segoe UI", sans-serif;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.dialog-form {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #003366;
+    color: white;
+    padding: 16px;
+}
+
+    .dialog-header h2 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+.dialog-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.dialog-body {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+.limit-display {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.dialog-footer {
+    padding: 16px;
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-confirm {
+    background-color: #0066cc;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #ccc;
+    color: black;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Font Awesome için CDN eklenmeli */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");

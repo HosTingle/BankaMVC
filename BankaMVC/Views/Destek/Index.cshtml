@@ -1,0 +1,110 @@
+﻿@model BankaMVC.Models.ViewModels.DestekViewModel
+@{
+    ViewData["Title"] = "Destek Merkezi";
+}
+
+<link rel="stylesheet" href="~/css/destek.css" />
+
+<div class="destek-container">
+    <div class="destek-content">
+        <header class="transfer-header">
+            <div class="header-content">
+                <a href="@Url.Action("index", "gostergepaneli")" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                </a>
+                <h1>Destek Merkezi</h1>
+            </div>
+        </header>
+
+        <!-- Sekmeler -->
+        <div class="sekme-container">
+            <div class="sekme-buttons">
+                <a href="@Url.Action("index")" class="sekme-btn active">
+                    <i class="fas fa-comments"></i> Taleplerim
+                </a>
+                <a href="@Url.Action("yenitalep")" class="sekme-btn">
+                    <i class="fas fa-plus"></i> Yeni Talep
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtreler -->
+        <div class="filtre-container">
+            <form method="get" class="filtre-form">
+                <div class="arama-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="arama" placeholder="Talep ara..." value="@Model.AramaMetni" />
+                </div>
+                <select name="durum" onchange="this.form.submit()" class="kucuk-select">
+                    <option value="tum" selected="@(string.Equals(Model.DurumFiltre, "tum", StringComparison.OrdinalIgnoreCase))">Tümü</option>
+                    <option value="açık" selected="@(string.Equals(Model.DurumFiltre, "açık", StringComparison.OrdinalIgnoreCase))">Açık</option>
+                    <option value="islemde" selected="@(string.Equals(Model.DurumFiltre, "islemde", StringComparison.OrdinalIgnoreCase))">Islemde</option>
+                    <option value="çözüldü" selected="@(string.Equals(Model.DurumFiltre, "çözüldü", StringComparison.OrdinalIgnoreCase))">Çözüldü</option>
+                    <option value="kapatildi" selected="@(string.Equals(Model.DurumFiltre, "kapatildi", StringComparison.OrdinalIgnoreCase))">Kapatildi</option>
+                </select>
+
+            
+            </form>
+        </div>
+
+        <!-- Talep Listesi -->
+        @if (Model.Talepler.Any())
+        {
+            <div class="talep-listesi">
+                @foreach (var talep in Model.Talepler)
+                {
+                    <div class="talep-card">
+                        <div class="talep-header">
+                            <h3>@talep.Konu</h3>
+                            <div class="durum-badge durum-@talep.Durum.ToLower().Replace("ç", "c").Replace("ğ", "g").Replace("ı", "i").Replace("ö", "o").Replace("ş", "s").Replace("ü", "u")">
+                                <i class="fas fa-@(talep.Durum == "Açık" ? "comment" : talep.Durum == "islemde" ? "clock" : talep.Durum == "Çözüldü" ? "check-circle" : "times-circle")"></i>
+                                @talep.Durum
+                       
+                            </div>
+                     
+                        </div>
+                        <p5 class="talep-mesaj">@talep.Mesaj</p5>
+                        @if(@talep.Yanit==null){
+                                 <p class="talep-mesaj">
+                           @talep.Yanit
+                        </p>
+                        }
+                        @if(@talep.Yanit!=null){
+                        <p class="talep-mesaj">
+                            <h4>
+                                Yanıt
+                            </h4>@talep.Yanit
+                        </p>
+                        }
+                        <div class="talep-footer">
+                            <span class="talep-no">Talep No: #@talep.Id</span>
+                            <span class="talep-tarih">@talep.OlusturmaTarihi.ToString("dd MMMM yyyy, HH:mm", new System.Globalization.CultureInfo("tr-TR"))</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="talep-yok">
+                <i class="fas fa-comments"></i>
+                <h3>Talep bulunamadı</h3>
+                <p>Aradığınız kriterlere uygun talep bulunmuyor.</p>
+            </div>
+        }
+
+        @if (TempData["Mesaj"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Mesaj"]
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/destek.js"></script>
+}

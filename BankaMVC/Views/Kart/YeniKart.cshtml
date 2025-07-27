@@ -1,0 +1,140 @@
+﻿@model BankaMVC.Models.ViewModels.YeniKartViewModel
+
+@{
+    ViewData["Title"] = "Yeni Kart Oluştur";
+}
+
+<link rel="stylesheet" href="~/css/yeni-hesap.css" />
+
+<div class="yeni-hesap-container">
+    <div class="yeni-hesap-content">
+
+        <header class="transfer-header">
+            <div class="header-content">
+                <a href="@Url.Action("Index", "kart")" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                </a>
+                <h1>Yeni Kart Oluştur</h1>
+            </div>
+        </header>
+
+
+
+        <form asp-action="YeniKartOlustur" method="post" class="yeni-hesap-form">
+            @Html.AntiForgeryToken()
+
+            <!-- Kart Tipi Seçimi -->
+            <div class="form-section">
+                <h2 class="section-title">Kart Tipi Seçiniz</h2>
+                <div class="hesap-tipi-grid">
+                    <div class="hesap-tipi-card">
+                        <input type="radio" id="bankaKarti" name="KartTipi" value="Banka Kartı" @(Model.KartTipi == "Banka Kartı" ? "checked" : "") />
+                        <label for="bankaKarti" class="hesap-tipi-label">
+                            <div class="card-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                            </div>
+                            <h3 class="card-title">Banka Kartı</h3>
+                            <p class="card-description">Günlük harcamalar için kullanılan kart.</p>
+                        </label>
+                    </div>
+
+                    <div class="hesap-tipi-card">
+                        <input type="radio" id="krediKarti" name="KartTipi" value="Kredi Kartı" @(Model.KartTipi == "Kredi Kartı" ? "checked" : "") />
+                        <label for="krediKarti" class="hesap-tipi-label">
+                            <div class="card-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                                </svg>
+                            </div>
+                            <h3 class="card-title">Kredi Kartı</h3>
+                            <p class="card-description">Limitli harcamalar için kullanılır.</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seçim Özeti -->
+            <div class="form-section secim-ozeti" id="secimOzeti" style="display: none;">
+                <h2 class="section-title">Seçim Özeti</h2>
+                <div class="ozet-card">
+                    <div class="ozet-item">
+                        <span class="ozet-label">Kart Tipi:</span>
+                        <span class="ozet-value" id="secilenHesapTipi">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="submit" class="btn-hesap-olustur" id="btnHesapOlustur" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    Kartı Oluştur
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const kartTipiInputs = document.querySelectorAll('input[name="KartTipi"]');
+            const secimOzeti = document.getElementById("secimOzeti");
+            const btnHesapOlustur = document.getElementById("btnHesapOlustur");
+            const secilenKartTipiSpan = document.getElementById("secilenHesapTipi");
+
+            function updateSummary() {
+                const secilenKartTipi = document.querySelector('input[name="KartTipi"]:checked');
+
+                if (secilenKartTipi) {
+                    const kartTipiLabel = document.querySelector(`label[for="${secilenKartTipi.id}"] .card-title`);
+                    secilenKartTipiSpan.textContent = kartTipiLabel.textContent;
+                    secimOzeti.style.display = "block";
+                    btnHesapOlustur.disabled = false;
+                } else {
+                    secilenKartTipiSpan.textContent = "-";
+                    secimOzeti.style.display = "none";
+                    btnHesapOlustur.disabled = true;
+                }
+            }
+
+            kartTipiInputs.forEach((input) => {
+                input.addEventListener("change", updateSummary);
+            });
+
+            updateSummary();
+
+            const form = document.querySelector(".yeni-hesap-form");
+            form.addEventListener("submit", () => {
+                btnHesapOlustur.innerHTML = `
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-spin">
+                                        <path d="M21 12a9 9 0 11-6.219-8.56"/>
+                                    </svg>
+                                    Kart Oluşturuluyor...
+                                `;
+                btnHesapOlustur.disabled = true;
+            });
+        });
+
+        // Spin animasyonu
+        const style = document.createElement("style");
+        style.textContent = `
+                            .animate-spin {
+                                animation: spin 1s linear infinite;
+                            }
+         {
+                                from { transform: rotate(0deg); }
+                                to { transform: rotate(360deg); }
+                            }
+                        `;
+        document.head.appendChild(style);
+    </script>
+}

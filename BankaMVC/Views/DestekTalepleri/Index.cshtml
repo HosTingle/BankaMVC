@@ -1,0 +1,81 @@
+﻿
+@model IEnumerable<BankaMVC.Models.Somut.BankaYonetimPaneli.Models.DestekTaleb>
+
+@{
+    ViewBag.Title = "Destek Talepleri";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="page-title">Destek Talepleri</h2>
+
+<div class="card">
+    <div class="card-header">
+        <div>Tüm Talepler</div>
+        <div>
+            <a href="#" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-filter"></i> Filtrele
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-primary ml-2">
+                <i class="fas fa-download"></i> Dışa Aktar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Müşteri</th>
+                        <th>Konu</th>
+                        <th>Talep Tarihi</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.MusteriAdiSoyadi</td>
+                            <td>@item.Konu</td>
+                            <td>@item.TalepTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                @switch (item.Durum)
+                                {
+                                    case BankaMVC.Models.Somut.BankaYonetimPaneli.Models.DestekDurumu.Açık:
+                                        <span class="badge badge-primary">Açık</span>
+                                        break;
+                                    case BankaMVC.Models.Somut.BankaYonetimPaneli.Models.DestekDurumu.Islemde:
+                                        <span class="badge badge-warning">İşlemde</span>
+                                        break;
+                                    case BankaMVC.Models.Somut.BankaYonetimPaneli.Models.DestekDurumu.Çözüldü:
+                                        <span class="badge badge-success">Çözüldü</span>
+                                        break;
+                                    case BankaMVC.Models.Somut.BankaYonetimPaneli.Models.DestekDurumu.Kapatildi:
+                                        <span class="badge badge-danger">Kapatıldı</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Detay", new { id = item.Id })" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Detay
+                                </a>
+                            </td>
+                            <td>
+                                <form asp-action="Silme" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i> Sil
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

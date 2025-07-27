@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Yetkisiz Erişim";
+    Layout = "~/Views/Shared/_ParaIslemLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Header -->
+            <div class="header-section">
+                <a href="@Url.Action("Index", "Giris")" class="back-btn">←</a>
+                <h2>Yetkisiz Erişim</h2>
+            </div>
+
+            <!-- Content -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <!-- Failure Icon -->
+                    <div class="failure-icon text-center mb-3">
+                        <div style="width: 100px; height: 100px; border-radius: 50%; background-color: #dc3545; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <i class="fas fa-times fa-3x text-white"></i>
+                        </div>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="success-message">
+                        <h2>Bu sayfaya erişim yetkiniz bulunmamaktadır!</h2>
+                        <p>Lütfen giriş yapın ya da yetkili bir hesapla tekrar deneyin.</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <a href="@Url.Action("Index", "Giris")" class="submit-btn" style="margin-bottom: 10px;">Geri Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

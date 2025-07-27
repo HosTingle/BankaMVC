@@ -1,0 +1,270 @@
+﻿@model BankaMVC.Models.ViewModels.ParaTransferiViewModel
+@{
+    ViewData["Title"] = "Para Transferi";
+    Layout = "~/Views/Shared/_ParaTransferiLayout.cshtml";
+}
+
+<div class="transfer-container">
+    <div class="transfer-wrapper">
+        <!-- Header -->
+        <header class="transfer-header">
+            <div class="header-content">
+                <a href="@Url.Action("index", "gostergepaneli")" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg>
+                </a>
+                <h1>Para Transfer</h1>
+            </div>
+        </header>
+
+        <!-- Ana İçerik -->
+        <main class="transfer-main">
+            @if (TempData["Mesaj"] != null)
+            {
+                <div class="alert alert-@TempData["MesajTip"]">
+                    @TempData["Mesaj"]
+                </div>
+            }
+
+            @using (Html.BeginForm("ParaGonderme", "ParaTransferi", FormMethod.Post, new { @class = "transfer-form" }))
+
+            {
+                @Html.AntiForgeryToken()
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @Html.ValidationSummary(false, "", new { @class = "validation-summary" })
+                    </div>
+                }
+
+                <!-- Ödeme Aracı Seçimi -->
+                <div class="form-card">
+                    <div class="card-header">
+                        <svg class="header-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path>
+                            <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path>
+                        </svg>
+                        <h2>Ödeme Aracı</h2>
+                    </div>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            @Html.RadioButtonFor(m => m.OdemeAraci, "hesap", new { @id = "odeme-hesap" })
+                            <div class="option-content">
+                                <div class="option-icon bg-blue">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path>
+                                        <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path>
+                                    </svg>
+                                </div>
+                                <span>Hesap</span>
+                            </div>
+                        </label>
+
+                        <label class="payment-option">
+                            @Html.RadioButtonFor(m => m.OdemeAraci, "kart", new { @id = "odeme-kart" })
+                            <div class="option-content">
+                                <div class="option-icon bg-green">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <span>Kredi Kartı</span>
+                            </div>
+                        </label>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.OdemeAraci, "", new { @class = "field-validation-error" })
+                </div>
+
+                <!-- Hesap/Kart Seçimi -->
+                <div class="form-card">
+                    <div class="card-header">
+                        <h3 id="secim-baslik">Hesap Seçimi</h3>
+                    </div>
+
+                    <!-- Hesap Listesi -->
+                    <div id="hesap-listesi" class="account-list">
+                        @if (Model.Hesaplar.Count == 0)
+                        {
+                            <div class="alert alert-warning">Kullanılabilir hesap bulunmamaktadır.</div>
+                        }
+                        else
+                        {
+                            @for (int i = 0; i < Model.Hesaplar.Count; i++)
+                            {
+                                var hesap = Model.Hesaplar[i];
+                                <label class="account-item">
+                                    @Html.RadioButtonFor(m => m.SecilenHesapId, hesap.HesapNo, new { @class = "account-radio" })
+                                    <div class="account-content">
+                                        <div class="account-info">
+                                            <p class="account-type">@hesap.HesapTipi</p>
+                                            <p class="account-number">@hesap.HesapNo</p>
+                                            <p class="account-no">Hesap No: @hesap.HesapNo</p>
+                                        </div>
+                                        <div class="account-balance">
+                                            <p class="balance-amount">@hesap.Bakiye.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</p>
+                                            <p class="balance-label">Kullanılabilir</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            }
+                        }
+
+                    </div>
+
+                    <!-- Kart Listesi -->
+                    <div id="kart-listesi" class="account-list" style="display: none;">
+                        @if (Model.Kartlar.Count == 0)
+                        {
+                            <div class="alert alert-warning">Kullanılabilir kart bulunmamaktadır.</div>
+                        }
+                        else
+                        {
+                            @for (int i = 0; i < Model.Kartlar.Count; i++)
+                            {
+                                var kart = Model.Kartlar[i];
+                                var isDisabled = kart.KartTipi == "Banka Kartı";
+                                var radioAttributes = new Dictionary<string, object> { { "class", "card-radio" } };
+
+                                if (isDisabled)
+                                {
+                                    radioAttributes.Add("disabled", "disabled");
+                                }
+
+                                <label class="account-item @(isDisabled ? "disabled" : "")">
+                                    @Html.RadioButtonFor(m => m.SecilenKartId, kart.KartNumarasi, radioAttributes)
+                                    <div class="account-content">
+                                        <div class="account-info">
+                                            <p class="account-type">@kart.KartTipi</p>
+                                            <p class="account-number">@kart.KartNumarasi</p>
+                                        </div>
+                                        <div class="account-balance">
+                                            <p class="balance-amount">
+                                                @(kart.Limit.HasValue
+                                                    ? kart.Limit.Value.ToString("C", new System.Globalization.CultureInfo("tr-TR"))
+                                                    : "")
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    @if (isDisabled)
+                                    {
+                                        <div class="disabled-message">
+                                            <div class="text-danger">Kullanılamaz</div>
+                                        </div>
+                                    }
+                                </label>
+                            }
+                        }
+
+                    </div>
+
+
+
+                    @Html.ValidationMessageFor(m => m.SecilenHesapId, "", new { @class = "field-validation-error" })
+                    @Html.ValidationMessageFor(m => m.SecilenKartId, "", new { @class = "field-validation-error" })
+                </div>
+
+                <!-- Alıcı Bilgileri -->
+                <div class="form-card">
+                    <div class="card-header">
+                        <svg class="header-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <h3>Alıcı Bilgileri</h3>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.AliciHesapNo, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.AliciHesapNo, new
+                            {
+                                @class = "form-input",
+                                @placeholder = "623423423",
+                                @required = "required"
+                            })
+                        <small class="form-help">Alıcının hesap numarasını giriniz</small>
+                        @Html.ValidationMessageFor(m => m.AliciHesapNo, "", new { @class = "field-validation-error" })
+                    </div>
+                </div>
+
+                <!-- İşlem Bilgileri -->
+                <div class="form-card">
+                    <div class="card-header">
+                     
+                        <h3>İşlem Bilgileri</h3>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Tutar, new { @class = "form-label" })
+                            <div class="input-with-icon">
+                                @Html.TextBoxFor(m => m.Tutar, new
+                                    {
+                                        @class = "form-input",
+                                        @type = "number",
+                                        @placeholder = "0.00",
+                                        @step = "0.01",
+                                        @min = "1",
+                                        @required = "required"
+                                    })
+                         
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Tutar, "", new { @class = "field-validation-error" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.IslemTarihi, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.IslemTarihi, new
+                                {
+                                    @class = "form-input",
+                                    @type = "date",
+                                    @required = "required",
+                                    @min = DateTime.Today.ToString("yyyy-MM-dd")
+                                })
+                            @Html.ValidationMessageFor(m => m.IslemTarihi, "", new { @class = "field-validation-error" })
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Açıklama -->
+                <div class="form-card">
+                    <div class="card-header">
+                        <svg class="header-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                        <h3>Açıklama</h3>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Aciklama, new { @class = "form-label" })
+                        @Html.TextAreaFor(m => m.Aciklama, new
+                            {
+                                @class = "form-textarea",
+                                @placeholder = "Transfer açıklaması yazabilirsiniz...",
+                                @rows = "3",
+                                @maxlength = "200"
+                            })
+                        <small class="form-help">En fazla 200 karakter</small>
+                        @Html.ValidationMessageFor(m => m.Aciklama, "", new { @class = "field-validation-error" })
+                    </div>
+                </div>
+
+                <!-- Transfer Butonu -->
+                <div class="form-actions">
+                    <button type="submit" class="transfer-btn">
+                        Transfer İşlemini Başlat
+                    </button>
+                </div>
+            }
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/para-transferi.js"></script>
+}

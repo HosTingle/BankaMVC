@@ -1,0 +1,122 @@
+﻿@model BankaMVC.Models.ViewModels.HesaplarViewModel
+
+@{
+    ViewData["Title"] = "Hesaplarım";
+}
+
+<link rel="stylesheet" href="~/css/hesaplar.css" />
+
+<div class="hesap-container">
+    <div class="hesap-content">
+
+        <header class="transfer-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <a href="@Url.Action("index", "gostergepaneli")" class="back-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m12 19-7-7 7-7"></path>
+                            <path d="M19 12H5"></path>
+                        </svg>
+                    </a>
+                    <h1>Hesaplar</h1>
+                </div>
+
+                <a href="@Url.Action("Yenihesap", "Hesaplar")" class="yeni-hesap-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    Yeni Hesap Oluştur
+                </a>
+            </div>
+        </header>
+
+        <!-- Sekmeler -->
+        <div class="sekme-container">
+            <div class="sekme-buttons">
+                <a href="@Url.Action("Index", new { sekme = "tum" })"
+                   class="sekme-btn @(Model.AktifSekme == "tum" ? "active" : "")">
+                    Tüm Hesaplar
+                </a>
+                <a href="@Url.Action("Index", new { sekme = "vadesiz" })"
+                   class="sekme-btn @(Model.AktifSekme == "vadesiz" ? "active" : "")">
+                    Vadesiz Hesaplar
+                </a>
+                <a href="@Url.Action("Index", new { sekme = "vadeli" })"
+                   class="sekme-btn @(Model.AktifSekme == "vadeli" ? "active" : "")">
+                    Vadeli Hesaplar
+                </a>
+            </div>
+        </div>
+
+        <!-- Hesap Kartları -->
+        @if (Model.Hesaplar.Any())
+        {
+            <div class="hesap-grid">
+                @foreach (var hesap in Model.Hesaplar)
+                {
+                    <div class="hesap-card">
+                        <!-- Para Birimi Badge -->
+                        <span class="para-birimi-badge para-birimi-@(hesap.ParaBirimi.ToLower())">
+                            @hesap.ParaBirimi
+                        </span>
+
+                        <!-- Hesap Tipi -->
+                        <div class="hesap-tipi">
+                            @hesap.HesapTipi @hesap.ParaBirimi Hesabı
+                        </div>
+
+                        <hr />
+
+                        <!-- Hesap No -->
+                        <div class="hesap-bilgi">
+                            <div class="hesap-bilgi-label">Hesap No</div>
+                            <div class="hesap-no">@hesap.HesapNo</div>
+                        </div>
+
+                        <!-- Güncel Bakiye -->
+                        <div class="hesap-bilgi">
+                            <div class="guncel-bakiye">
+                                @{
+                                    var culture = hesap.ParaBirimi switch
+                                    {
+                                        "USD" => new System.Globalization.CultureInfo("en-US"),
+                                        "EUR" => new System.Globalization.CultureInfo("en-IE"),
+                                        "TL" => new System.Globalization.CultureInfo("tr-TR"),
+                                        _ => System.Globalization.CultureInfo.InvariantCulture
+                                    };
+                                }
+                                <p class="balance-amount">@hesap.Bakiye.ToString("C", culture)</p>
+
+                            </div>
+                        </div>
+
+                        <!-- Kullanılabilir Bakiye -->
+                        <div class="hesap-bilgi">
+                            <div class="hesap-bilgi-label">Kullanılabilir Bakiye</div>
+                    
+                        </div>
+
+                        <!-- Alt Kısım -->
+                        <div class="hesap-alt">
+                            <span class="durum-badge @(hesap.HesapTipi == "Vadesiz" ? "durum-aktif" : "durum-vadeli")">
+                                @(hesap.HesapTipi == "Vadesiz" ? "Vadesiz" : "Vadeli Yatırım")
+                            </span>
+                            <span class="tarih">@hesap.OlusturmaTarihi.ToString("dd.MM.yyyy")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="hesap-yok">
+                <p class="hesap-yok-baslik">Bu kategoride hesap bulunamadı</p>
+                <p class="hesap-yok-aciklama">Farklı bir kategori seçmeyi deneyin</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/hesaplar.js"></script>
+}
