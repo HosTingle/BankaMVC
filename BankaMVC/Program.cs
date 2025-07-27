@@ -7,6 +7,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<TokenCheckFilter>();
 builder.Services.AddAuthentication("MyCookieAuth")
+
     .AddCookie("MyCookieAuth", options =>
     {
         options.LoginPath = "/Giris/Index"; // Giri? sayfan?n yolu
@@ -16,6 +17,7 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<TokenCheckFilter>();
 });
+builder.WebHost.UseUrls("http://*:4000");
 var app = builder.Build();
 
 app.Use(async (context, next) =>
